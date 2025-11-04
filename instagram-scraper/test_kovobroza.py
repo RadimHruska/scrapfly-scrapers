@@ -40,14 +40,10 @@ if posts_file.exists():
         print(f"   ✓ Shortcode: {post.get('shortcode', 'N/A')}")
         print(f"   ✓ ID: {post.get('id', 'N/A')}")
         
-        # Kontrola obrázků
-        if post.get('image_versions2') and post['image_versions2'].get('candidates'):
-            candidates = post['image_versions2']['candidates']
-            print(f"   ✓ Počet verzí obrázku: {len(candidates)}")
-            if candidates:
-                highest_res = candidates[0]  # První je obvykle nejvyšší rozlišení
-                print(f"   ✓ Nejvyšší rozlišení: {highest_res.get('width')}x{highest_res.get('height')}")
-                print(f"   ✓ URL obrázku: {highest_res.get('url', 'N/A')[:80]}...")
+        # Kontrola obrázků - nyní máme pouze jeden obrázek
+        if post.get('image_url'):
+            print(f"   ✓ URL obrázku: {post.get('image_url', 'N/A')[:80]}...")
+            print(f"   ✓ Rozlišení: {post.get('image_width')}x{post.get('image_height')}")
         else:
             print("   ⚠ Žádné obrázky v příspěvku")
         

@@ -232,6 +232,29 @@ def parse_user_posts(data: Dict) -> Dict:
     }""",
         data,
     )
+    
+    # Extrahovat pouze jeden obrázek s nejvyšším rozlišením
+    if result and result.get("image_versions2") and result["image_versions2"].get("candidates"):
+        candidates = result["image_versions2"]["candidates"]
+        # První candidate má obvykle nejvyšší rozlišení
+        best_image = candidates[0]
+        result["image_url"] = best_image.get("url")
+        result["image_width"] = best_image.get("width")
+        result["image_height"] = best_image.get("height")
+        # Odstranit původní image_versions2 - chceme pouze jeden obrázek
+        result.pop("image_versions2", None)
+    
+    # Stejně pro videa - vybrat nejvyšší kvalitu
+    if result and result.get("video_versions"):
+        video_versions = result["video_versions"]
+        if isinstance(video_versions, list) and len(video_versions) > 0:
+            # První video má obvykle nejvyšší kvalitu
+            best_video = video_versions[0]
+            result["video_url"] = best_video.get("url")
+            result["video_width"] = best_video.get("width")
+            result["video_height"] = best_video.get("height")
+            # Odstranit původní video_versions - chceme pouze jedno video
+            result.pop("video_versions", None)
 
     return result
 

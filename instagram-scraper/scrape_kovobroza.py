@@ -39,7 +39,24 @@ async def run():
     posts_all = []
     post_count = 0
     async for post in instagram.scrape_user_posts(USERNAME, max_pages=None):
-        posts_all.append(post)
+        # Extrahovat pouze jeden obrázek s nejvyšším rozlišením
+        processed_post = {
+            "id": post.get("id"),
+            "shortcode": post.get("shortcode"),
+            "caption": post.get("caption"),
+            "taken_at": post.get("taken_at"),
+            "image_url": post.get("image_url"),  # Pouze jeden obrázek
+            "image_width": post.get("image_width"),
+            "image_height": post.get("image_height"),
+            "video_url": post.get("video_url"),  # Pouze jedno video (pokud existuje)
+            "video_width": post.get("video_width"),
+            "video_height": post.get("video_height"),
+            "like_count": post.get("like_count"),
+            "comment_count": post.get("comment_count"),
+            "link": post.get("link"),
+            "title": post.get("title")
+        }
+        posts_all.append(processed_post)
         post_count += 1
         if post_count % 10 == 0:
             log.info(f"Načteno {post_count} příspěvků...")
