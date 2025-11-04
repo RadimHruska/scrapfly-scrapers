@@ -7,8 +7,9 @@ import asyncio
 import json
 import instagram
 
-output = Path(__file__).parent / "results"
-output.mkdir(exist_ok=True)
+# Pro GitHub Pages ukládáme do docs/ složky
+output = Path(__file__).parent.parent / "docs" / "instagram"
+output.mkdir(parents=True, exist_ok=True)
 
 USERNAME = "aj_sluzby"
 

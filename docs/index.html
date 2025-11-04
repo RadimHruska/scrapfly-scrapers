@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Scraper Results</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #E1306C;
+            padding-bottom: 10px;
+        }
+        .profile {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .profile h2 {
+            color: #E1306C;
+            margin-top: 0;
+        }
+        .info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .info-item {
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .info-value {
+            color: #333;
+            font-size: 1.1em;
+        }
+        .links {
+            margin-top: 15px;
+        }
+        .links a {
+            display: inline-block;
+            margin-right: 15px;
+            padding: 8px 16px;
+            background: #E1306C;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        .links a:hover {
+            background: #C13584;
+        }
+        .timestamp {
+            color: #999;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📸 Instagram Scraper Results</h1>
+    <p>Automaticky aktualizované výsledky scrapování Instagram profilů</p>
+    
+    <div class="profile">
+        <h2>@kovobroza</h2>
+        <div class="info">
+            <div class="info-item">
+                <div class="info-label">Uživatel</div>
+                <div class="info-value" id="kovobroza-name">Načítám...</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Příspěvky</div>
+                <div class="info-value" id="kovobroza-posts">Načítám...</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Sledující</div>
+                <div class="info-value" id="kovobroza-followers">Načítám...</div>
+            </div>
+        </div>
+        <div class="links">
+            <a href="instagram/kovobroza-user.json" target="_blank">JSON - Profil</a>
+            <a href="instagram/kovobroza-posts.json" target="_blank">JSON - Příspěvky</a>
+        </div>
+    </div>
+    
+    <div class="profile">
+        <h2>@aj_sluzby</h2>
+        <div class="info">
+            <div class="info-item">
+                <div class="info-label">Uživatel</div>
+                <div class="info-value" id="aj_sluzby-name">Načítám...</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Příspěvky</div>
+                <div class="info-value" id="aj_sluzby-posts">Načítám...</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Sledující</div>
+                <div class="info-value" id="aj_sluzby-followers">Načítám...</div>
+            </div>
+        </div>
+        <div class="links">
+            <a href="instagram/aj_sluzby-user.json" target="_blank">JSON - Profil</a>
+            <a href="instagram/aj_sluzby-posts.json" target="_blank">JSON - Příspěvky</a>
+        </div>
+    </div>
+    
+    <div class="timestamp">
+        Poslední aktualizace: <span id="last-update">Načítám...</span>
+    </div>
+    
+    <script>
+        async function loadProfile(profile, username) {
+            try {
+                const response = await fetch(`instagram/${username}-user.json`);
+                const data = await response.json();
+                
+                document.getElementById(`${profile}-name`).textContent = data.name || username;
+                document.getElementById(`${profile}-posts`).textContent = data.image_count || 0;
+                document.getElementById(`${profile}-followers`).textContent = data.followers?.toLocaleString() || 0;
+            } catch (error) {
+                document.getElementById(`${profile}-name`).textContent = 'Chyba při načítání';
+                console.error(`Error loading ${username}:`, error);
+            }
+        }
+        
+        async function updateTimestamp() {
+            try {
+                const response = await fetch('instagram/kovobroza-user.json');
+                const lastModified = response.headers.get('last-modified');
+                if (lastModified) {
+                    document.getElementById('last-update').textContent = new Date(lastModified).toLocaleString('cs-CZ');
+                } else {
+                    document.getElementById('last-update').textContent = new Date().toLocaleString('cs-CZ');
+                }
+            } catch (error) {
+                document.getElementById('last-update').textContent = 'Nepodařilo se načíst';
+            }
+        }
+        
+        // Načíst data pro oba profily
+        loadProfile('kovobroza', 'kovobroza');
+        loadProfile('aj_sluzby', 'aj_sluzby');
+        updateTimestamp();
+    </script>
+</body>
+</html>
+
