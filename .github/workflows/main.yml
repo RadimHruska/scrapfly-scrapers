@@ -1,0 +1,54 @@
+name: Instagram Scraper
+
+on:
+  schedule:
+    - cron: '0 */5 * * *'
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+      
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        
+    - name: Install dependencies
+      working-directory: instagram-scraper
+      run: |
+        python -m pip install --upgrade pip
+        pip install 'scrapfly-sdk[all]' loguru jmespath
+        
+    - name: Scrape kovobroza profile
+      working-directory: instagram-scraper
+      env:
+        SCRAPFLY_KEY: ${{ secrets.SCRAPFLY_KEY }}
+      run: |
+        python scrape_kovobroza.py
+        
+    - name: Scrape aj_sluzby profile
+      working-directory: instagram-scraper
+      env:
+        SCRAPFLY_KEY: ${{ secrets.SCRAPFLY_KEY }}
+      run: |
+        python scrape_aj_sluzby.py
+        
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add docs/
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Update Instagram scraper results [skip ci]"
+          git push
+        fi
+
