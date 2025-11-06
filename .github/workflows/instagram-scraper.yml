@@ -2,8 +2,8 @@ name: Instagram Scraper
 
 on:
   schedule:
-    # Spouští se každých 5 hodin
-    - cron: '0 */5 * * *'
+    # Spouští se každých 24 hodin
+    - cron: '0 */24 * * *'
   workflow_dispatch:  # Umožňuje ruční spuštění
 
 jobs:
